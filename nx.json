@@ -1,0 +1,27 @@
+{
+  "npmScope": "chesstourney",
+  "implicitDependencies": {
+    "workspace.json": "*",
+    "package.json": {
+      "dependencies": "*",
+      "devDependencies": "*"
+    },
+    "tsconfig.json": "*",
+    "tslint.json": "*",
+    "nx.json": "*"
+  },
+  "projects": {
+    "chesstourney": {
+      "tags": []
+    },
+    "chesstourney-e2e": {
+      "tags": [],
+      "implicitDependencies": [
+        "chesstourney"
+      ]
+    },
+    "api": {
+      "tags": []
+    }
+  }
+}
