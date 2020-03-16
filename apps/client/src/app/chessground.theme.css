@@ -1,0 +1,37 @@
+.cg-wrap coords.ranks {
+  right: 0px;
+  top: 1px;
+  font-size: 11px;
+  width: 0.8em;
+  font-weight: bold;
+}
+
+.cg-wrap coords.ranks coord {
+  transform: none;
+}
+
+.orientation-white .files coord:nth-child(2n + 1),
+.orientation-white .ranks coord:nth-child(2n),
+.orientation-black .files coord:nth-child(2n),
+.orientation-black .ranks coord:nth-child(2n + 1) {
+  color: #f0d9b5;
+}
+
+.orientation-white .files coord:nth-child(2n),
+.orientation-white .ranks coord:nth-child(2n + 1),
+.orientation-black .files coord:nth-child(2n + 1),
+.orientation-black .ranks coord:nth-child(2n) {
+  color: #946f51;
+}
+
+.cg-wrap coords.files {
+  bottom: 1px;
+  font-size: 11px;
+  font-weight: bold;
+  text-align: left;
+  text-transform: none;
+}
+
+.cg-wrap coords.files coord {
+  padding-left: 4px;
+}

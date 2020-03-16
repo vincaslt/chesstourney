@@ -38,6 +38,7 @@
     "class-transformer-validator": "^0.8.0",
     "class-validator": "^0.11.0",
     "document-register-element": "1.13.1",
+    "fomantic-ui-css": "^2.8.4",
     "jsonwebtoken": "^8.5.1",
     "micro": "^9.3.4",
     "micro-dev": "github:vincaslt/micro-dev#master",
@@ -46,7 +47,10 @@
     "next": "9.1.5",
     "ramda": "^0.27.0",
     "react": "16.12.0",
+    "react-chessground": "^1.1.0",
     "react-dom": "16.12.0",
+    "react-router-dom": "5.1.2",
+    "semantic-ui-react": "^0.88.2",
     "styled-components": "5.0.0"
   },
   "devDependencies": {
@@ -85,6 +89,7 @@
     "ts-jest": "24.0.0",
     "ts-node": "~7.0.0",
     "tslint": "~6.0.0",
-    "typescript": "^3.8.3"
+    "typescript": "^3.8.3",
+    "@types/react-router-dom": "5.1.3"
   }
 }

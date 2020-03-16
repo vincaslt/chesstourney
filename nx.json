@@ -1,5 +1,5 @@
 {
-  "npmScope": "chesstourney",
+  "npmScope": "client",
   "implicitDependencies": {
     "workspace.json": "*",
     "package.json": {
@@ -11,17 +11,15 @@
     "nx.json": "*"
   },
   "projects": {
-    "chesstourney": {
-      "tags": []
-    },
-    "chesstourney-e2e": {
-      "tags": [],
-      "implicitDependencies": [
-        "chesstourney"
-      ]
-    },
     "api": {
       "tags": []
+    },
+    "client": {
+      "tags": []
+    },
+    "client-e2e": {
+      "tags": [],
+      "implicitDependencies": ["client"]
     }
   }
 }
