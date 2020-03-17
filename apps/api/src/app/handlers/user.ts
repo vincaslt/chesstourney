@@ -8,9 +8,11 @@ import { getBody } from '../lib/utils/getBody';
 import { getAuth } from '../lib/utils/getAuth';
 import { generateRandomString } from '../utils/string';
 
-const createUser: AugmentedRequestHandler = async (req) => {
+const createUser: AugmentedRequestHandler = async req => {
   const dto = await getBody(req, CreateUserDTO);
-  const exists = await UserModel.exists({ email: dto.email });
+  const exists = await UserModel.exists({
+    $or: [{ email: dto.email }, { username: dto.username }]
+  });
 
   if (exists) {
     throw createError(STATUS_ERROR.BAD_REQUEST, 'User already exists');
@@ -27,7 +29,7 @@ const createUser: AugmentedRequestHandler = async (req) => {
   return UserModel.create(user);
 };
 
-const getAuthUserInfo: AugmentedRequestHandler = async (req) => {
+const getAuthUserInfo: AugmentedRequestHandler = async req => {
   const { userId } = getAuth(req);
 
   const user = await UserModel.findById(userId);

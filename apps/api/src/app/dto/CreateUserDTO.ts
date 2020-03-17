@@ -1,9 +1,8 @@
-import { IsEmail, IsNotEmpty, Matches, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
 
 export class CreateUserDTO {
   @IsNotEmpty()
-  @Matches(/^((\w|\.|,)+(\s(?!$)|$))+$/)
-  fullName: string;
+  username: string;
 
   @IsNotEmpty()
   @IsEmail()

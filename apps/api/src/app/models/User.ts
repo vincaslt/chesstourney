@@ -2,7 +2,7 @@ import { prop, getModelForClass } from '@typegoose/typegoose';
 
 export class UserInitFields {
   email: string;
-  fullName: string;
+  username: string;
   password: string;
   verificationCode: string;
 }
@@ -11,8 +11,8 @@ export class User {
   @prop({ required: true, unique: true, index: true })
   email: string;
 
-  @prop({ required: true })
-  fullName: string;
+  @prop({ required: true, unique: true, index: true })
+  username: string;
 
   @prop({ required: true, default: false })
   verified: boolean;
