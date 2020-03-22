@@ -1,5 +1,7 @@
 import { prop, getModelForClass, Ref } from '@typegoose/typegoose';
+import { INITIAL_EPD } from 'chessops/fen';
 import { User } from './User';
+import { Uci } from 'chessops/types';
 
 // TODO: Calculate result from lastMoveDate+millisPerMove and png
 /*
@@ -23,14 +25,17 @@ export class Game {
   @prop({ required: true, ref: User, index: true })
   black: Ref<User>;
 
-  @prop({ default: '' })
-  pgn: string;
+  @prop({ default: INITIAL_EPD })
+  lastPosition: string;
+
+  @prop({ default: [] })
+  history: Uci[];
 
   @prop({ require: true })
   millisPerMove: number;
 
-  @prop()
-  lastMoveDate?: Date;
+  @prop({ default: new Date() })
+  lastMoveDate: Date;
 }
 
 export const GameModel = getModelForClass(Game, {

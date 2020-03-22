@@ -54,7 +54,7 @@ const startTournament: AugmentedRequestHandler = async req => {
     throw createError(STATUS_ERROR.NOT_FOUND, 'Tournament not found');
   }
 
-  const promises = [];
+  const games = [];
 
   for (let i = 0; i < tournament.players.length - 1; i++) {
     for (let j = i + 1; j < tournament.players.length; j++) {
@@ -73,17 +73,21 @@ const startTournament: AugmentedRequestHandler = async req => {
         millisPerMove: tournament.millisPerMove
       };
 
-      promises.push(GameModel.create(game1, game2));
+      games.push(new GameModel(game1));
+      games.push(new GameModel(game2));
     }
   }
 
-  await promises;
+  console.log('GGG', games);
+
+  await GameModel.create(games);
 
   tournament.isStarted = true;
+  tournament.games = games;
   return tournament.save();
 };
 
-export const userHandlers = [
+export const tournamentHandlers = [
   post('/tournament', createTournament),
   post('/tournament/:id/join', joinTournament),
   post('/tournament/:id/start', startTournament)

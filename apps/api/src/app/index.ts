@@ -11,6 +11,8 @@ import { withRouter } from './lib/decorators/withRouter';
 import { withCors } from './lib/decorators/withCors';
 import { authHandlers } from './handlers/auth';
 import { userHandlers } from './handlers/user';
+import { tournamentHandlers } from './handlers/tournament';
+import { gameHandlers } from './handlers/game';
 import { withErrorHandling } from './lib/decorators/withErrorHandling';
 
 async function init() {
@@ -30,12 +32,10 @@ async function init() {
   const port = process.env.PORT || 3001;
   const handler = withCors(
     withErrorHandling(
-      withRouter(
-        userHandlers,
-        authHandlers,
-      )
-    )
-  , [environment.appUrl]);
+      withRouter(userHandlers, authHandlers, tournamentHandlers, gameHandlers)
+    ),
+    [environment.appUrl]
+  );
 
   console.info(`starting to listen on port ${port}`);
 
