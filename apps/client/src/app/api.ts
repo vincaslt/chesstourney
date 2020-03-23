@@ -8,6 +8,14 @@ import { GameInfoDTO, fromGameInfoDTO } from './interfaces/game';
 export const register = (user: CreateUserDTO) =>
   api.post('/user', user).then(res => res.data);
 
+export const getUserInfo = withAuth(headers => () =>
+  api
+    .get<{ user: UserInfoDTO }>('/user/me', { headers })
+    .then(res => ({
+      user: fromUserInfoDTO(res.data.user)
+    }))
+);
+
 export const signIn = (credentials: SignInDTO) =>
   api
     .post<{

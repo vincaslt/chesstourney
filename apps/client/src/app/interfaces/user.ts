@@ -7,7 +7,7 @@ export interface CreateUserDTO {
 export interface UserInfoDTO {
   _id: string;
   email: string;
-  fullName: string;
+  username: string;
   createdAt: string;
   updatedAt: string;
   verified: boolean;
