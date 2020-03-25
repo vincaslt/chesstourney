@@ -4,6 +4,7 @@ import 'react-chessground/dist/styles/chessground.css';
 import './chessground.theme.css';
 import { Container } from 'semantic-ui-react';
 import Chessground from 'react-chessground';
+import { Dests, Key } from 'chessground/types';
 import { parseSquare, makeSquare, makeUci } from 'chessops/util';
 import { Chess } from 'chessops/chess';
 import { Uci } from 'chessops/types';
@@ -16,9 +17,9 @@ import { GameInfo } from '../interfaces/game';
 function Game() {
   const { id } = useParams<{ id: string }>();
   const { userInfo } = UserContainer.useContainer();
-  const game = useRef<GameInfo>(null);
+  const game = useRef<{ info?: GameInfo }>({});
   const [fen, setFen] = useState(
-    () => game.current?.lastPosition || INITIAL_BOARD_FEN
+    () => game.current.info?.lastPosition || INITIAL_BOARD_FEN
   );
   const [history, setHistory] = useState<Uci[]>([]);
 
@@ -26,26 +27,38 @@ function Game() {
 
   useEffect(() => {
     getGame(id).then(currentGame => {
-      game.current = currentGame;
+      game.current.info = currentGame;
       setFen(currentGame.lastPosition);
       setHistory(currentGame.history);
     });
   }, [id]);
 
-  const dests = {};
+  const dests: Dests = {};
   for (const [from, squares] of position.allDests()) {
     const fromDests = [];
     for (const square of squares) {
       fromDests.push(makeSquare(square));
     }
-    dests[makeSquare(from)] = fromDests;
+    dests[makeSquare(from)] = fromDests as Key[];
   }
 
   const turnWhite = position.turn === 'white';
-  const turnBlack = position.turn === 'black';
-  const isWhite = game.current?.white === userInfo._id;
-  const isBlack = game.current?.black === userInfo._id;
-  const isPlayersTurn = (turnWhite && isWhite) || (turnBlack && isBlack);
+  const isWhite = game.current.info?.white === userInfo?._id;
+  const isBlack = game.current.info?.black === userInfo?._id;
+  const isPlayersTurn = turnWhite ? isWhite : isBlack;
+
+  const handleMove = (_from: Key, _to: Key) => {
+    const from = parseSquare(_from);
+    const to = parseSquare(_to);
+    if (!from || !to) {
+      throw new Error('Invalid move');
+    }
+    const move = { from, to };
+    position.play(move);
+    submitMove(id, move);
+    setFen(makeFen(position.toSetup()));
+    setHistory(history => [...history, move]);
+  };
 
   return (
     <Container>
@@ -55,21 +68,13 @@ function Game() {
         movable={{
           showDests: isPlayersTurn,
           free: false,
-          color: isPlayersTurn
-            ? (turnWhite && 'white') || (turnBlack && 'black')
-            : undefined,
+          color: isPlayersTurn ? (turnWhite ? 'white' : 'black') : undefined,
           dests
         }}
         fen={fen}
-        onMove={(from, to) => {
-          const move = { from: parseSquare(from), to: parseSquare(to) };
-          position.play(move);
-          submitMove(id, move);
-          setFen(makeFen(position.toSetup()));
-          setHistory(history => [...history, move]);
-        }}
+        onMove={handleMove}
       />
-      {userInfo.username}
+      {userInfo?.username}
       <ol>
         {history.map(uci => (
           <li key={makeUci(uci)}>{makeUci(uci)}</li>

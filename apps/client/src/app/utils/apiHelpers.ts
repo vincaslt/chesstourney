@@ -3,8 +3,8 @@ import {
   JwtPayload,
   RequestRefreshTokenDTO,
   RefreshTokenDTO
-} from './interfaces/auth';
-import { environment } from '../environments/environment';
+} from '../interfaces/auth';
+import { environment } from '../../environments/environment';
 
 export const api = Axios.create({
   baseURL: environment.backendUrl
@@ -46,8 +46,8 @@ export function withAuth<Args extends any[], T>(
     if (!accessToken) {
       // Not logged in - redirect to login
       // eslint-disable-next-line no-restricted-globals
-      // location.assign(PublicRoutes.SignIn); // TODO: redirect to login
-      return Promise.reject(new Error('Not logged in!'));
+      location.assign('/login');
+      return Promise.reject(new Error('Not logged in'));
     }
 
     return request(createAuthHeaders(accessToken))(...args).catch(
@@ -70,7 +70,7 @@ export function withAuth<Args extends any[], T>(
             localStorage.removeItem('accessToken');
             localStorage.removeItem('refreshToken');
             // eslint-disable-next-line no-restricted-globals
-            // location.assign(PublicRoutes.SignIn); // TODO: redirect to login
+            location.assign('/login');
             return Promise.reject('Tokens have expired!');
           })
           .then(({ token }) => {

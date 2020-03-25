@@ -78,8 +78,6 @@ const startTournament: AugmentedRequestHandler = async req => {
     }
   }
 
-  console.log('GGG', games);
-
   await GameModel.create(games);
 
   tournament.isStarted = true;

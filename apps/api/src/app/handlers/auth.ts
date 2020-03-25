@@ -16,10 +16,10 @@ import { getBody } from '../lib/utils/getBody';
 import { getAuth } from '../lib/utils/getAuth';
 import { getQuery } from '../lib/utils/getQuery';
 
-const login: AugmentedRequestHandler = async (req) => {
-  const { email, password } = await getBody(req, SignInDTO);
+const login: AugmentedRequestHandler = async req => {
+  const { username, password } = await getBody(req, SignInDTO);
 
-  const user = await UserModel.findOne({ email }).select('+password');
+  const user = await UserModel.findOne({ username }).select('+password');
 
   const isPasswordCorrect =
     user && (await bcrypt.compare(password, user.password));
@@ -45,7 +45,7 @@ const login: AugmentedRequestHandler = async (req) => {
   };
 };
 
-const logout: AugmentedRequestHandler = async (req) => {
+const logout: AugmentedRequestHandler = async req => {
   const { userId } = getAuth(req);
   const exists = await UserModel.exists({ _id: userId });
 
@@ -58,13 +58,13 @@ const logout: AugmentedRequestHandler = async (req) => {
   });
 };
 
-const refreshToken: AugmentedRequestHandler = async (req) => {
+const refreshToken: AugmentedRequestHandler = async req => {
   const dto = await getBody(req, RefreshTokenDTO);
   const token = await refreshAccessToken(dto.userId, dto.refreshToken);
   return { token };
 };
 
-const verifyEmail: AugmentedRequestHandler = async (req) => {
+const verifyEmail: AugmentedRequestHandler = async req => {
   const { userId } = getAuth(req);
   const { code } = getQuery(req, ['code']);
 

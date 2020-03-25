@@ -4,7 +4,7 @@ export interface JwtPayload {
 }
 
 export interface SignInDTO {
-  email: string;
+  username: string;
   password: string;
 }
 

@@ -1,4 +1,4 @@
-import { api, withAuth } from './apiHelpers';
+import { api, withAuth } from './utils/apiHelpers';
 import { SignInDTO, AuthTokensDTO } from './interfaces/auth';
 import { UserInfoDTO, fromUserInfoDTO, CreateUserDTO } from './interfaces/user';
 import { CreateTournamentDTO, TournamentDTO } from './interfaces/tournament';

@@ -51,6 +51,8 @@ const getAuthUserInfo: AugmentedRequestHandler = async req => {
     $where: 'this.lastMoveDate.getTime() > (Date.now() - this.millisPerMove)'
   });
 
+  // TODO: return tournaments with games
+
   return { user, games };
 };
 
