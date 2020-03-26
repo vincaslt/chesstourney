@@ -7,7 +7,9 @@ import { useLoading } from '../utils/useLoading';
 
 function useUser() {
   const [userInfo, setUserInfo] = useState<UserInfo>();
-  const [loading, withLoading] = useLoading();
+  const [loading, withLoading] = useLoading(
+    !!localStorage.getItem('accessToken')
+  );
 
   useEffect(() => {
     const accessToken = localStorage.getItem('accessToken');

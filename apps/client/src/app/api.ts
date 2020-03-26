@@ -3,7 +3,12 @@ import { SignInDTO, AuthTokensDTO } from './interfaces/auth';
 import { UserInfoDTO, fromUserInfoDTO, CreateUserDTO } from './interfaces/user';
 import { CreateTournamentDTO, TournamentDTO } from './interfaces/tournament';
 import { Uci } from 'chessops/types';
-import { GameInfoDTO, fromGameInfoDTO } from './interfaces/game';
+import {
+  GameInfoDTO,
+  fromGameInfoDTO,
+  UserTournamentsDTO,
+  fromUserTournamentsDTO
+} from './interfaces/game';
 
 export const register = (user: CreateUserDTO) =>
   api.post('/user', user).then(res => res.data);
@@ -26,6 +31,13 @@ export const signIn = (credentials: SignInDTO) =>
       tokens: res.data.tokens,
       user: fromUserInfoDTO(res.data.user)
     }));
+
+export const getUserTournaments = withAuth(headers => () =>
+  api
+    .get<UserTournamentsDTO>('/tournament', { headers })
+    .then(res => res.data)
+    .then(fromUserTournamentsDTO)
+);
 
 export const createTournament = withAuth(
   headers => (dto: CreateTournamentDTO) =>

@@ -7,8 +7,6 @@ import { UserModel, UserInitFields } from '../models/User';
 import { getBody } from '../lib/utils/getBody';
 import { getAuth } from '../lib/utils/getAuth';
 import { generateRandomString } from '../utils/string';
-import { GameModel } from '../models/Game';
-import { Types } from 'mongoose';
 
 const createUser: AugmentedRequestHandler = async req => {
   const dto = await getBody(req, CreateUserDTO);
@@ -39,21 +37,7 @@ const getAuthUserInfo: AugmentedRequestHandler = async req => {
   if (!user) {
     throw createError(STATUS_ERROR.NOT_FOUND, 'User not found');
   }
-
-  const games = await GameModel.findOne({
-    $or: [
-      { black: Types.ObjectId(userId) },
-      {
-        white: Types.ObjectId(userId)
-      }
-    ],
-    outcome: { $exists: false },
-    $where: 'this.lastMoveDate.getTime() > (Date.now() - this.millisPerMove)'
-  });
-
-  // TODO: return tournaments with games
-
-  return { user, games };
+  return { user };
 };
 
 export const userHandlers = [

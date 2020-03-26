@@ -1,6 +1,5 @@
 import { prop, getModelForClass, Ref, arrayProp } from '@typegoose/typegoose';
 import { User } from './User';
-import { Game } from './Game';
 
 export interface TournamentInitFields {
   name: string;
@@ -18,9 +17,6 @@ export class Tournament {
 
   @arrayProp({ required: true, ref: User })
   players: Ref<User>[];
-
-  @arrayProp({ ref: Game, default: [] })
-  games: Ref<Game>[];
 
   @prop({ require: true })
   millisPerMove: number;

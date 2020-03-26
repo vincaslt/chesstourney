@@ -1,4 +1,4 @@
-import { post, AugmentedRequestHandler } from 'microrouter';
+import { post, AugmentedRequestHandler, get } from 'microrouter';
 import { CreateTournamentDTO } from '../dto/CreateTournamentDTO';
 import { getBody } from '../lib/utils/getBody';
 import { getAuth } from '../lib/utils/getAuth';
@@ -7,7 +7,8 @@ import { getParams } from '../lib/utils/getParams';
 import { createError } from 'micro';
 import { STATUS_ERROR } from '../lib/constants';
 import { Types } from 'mongoose';
-import { GameModel, GameInitFields } from '../models/Game';
+import { GameModel, GameInitFields, Game } from '../models/Game';
+import { DocumentType } from '@typegoose/typegoose';
 
 const createTournament: AugmentedRequestHandler = async req => {
   const { userId } = getAuth(req);
@@ -62,12 +63,14 @@ const startTournament: AugmentedRequestHandler = async req => {
       const player2 = tournament.players[j];
 
       const game1: GameInitFields = {
+        tournament,
         black: player1,
         white: player2,
         millisPerMove: tournament.millisPerMove
       };
 
       const game2: GameInitFields = {
+        tournament,
         black: player2,
         white: player1,
         millisPerMove: tournament.millisPerMove
@@ -81,12 +84,49 @@ const startTournament: AugmentedRequestHandler = async req => {
   await GameModel.create(games);
 
   tournament.isStarted = true;
-  tournament.games = games;
   return tournament.save();
+};
+
+const listTournaments: AugmentedRequestHandler = async req => {
+  const { userId } = getAuth(req);
+
+  const activeGames = await GameModel.find({
+    $or: [
+      { black: Types.ObjectId(userId) },
+      {
+        white: Types.ObjectId(userId)
+      }
+    ],
+    outcome: { $exists: false },
+    $where: 'this.lastMoveDate.getTime() > (Date.now() - this.millisPerMove)'
+  });
+
+  const tournaments = await TournamentModel.find({
+    players: Types.ObjectId(userId)
+  });
+
+  const activeTournaments = (
+    await Promise.all(
+      tournaments.map(
+        async tournament =>
+          await GameModel.findOne({
+            tournament: tournament.id,
+            outcome: { $exists: false },
+            $where:
+              'this.lastMoveDate.getTime() > (Date.now() - this.millisPerMove)'
+          })
+      )
+    )
+  )
+    .filter((t): t is DocumentType<Game> => !!t)
+    .map(({ id }) => id);
+
+  return { activeGames, tournaments, activeTournaments };
 };
 
 export const tournamentHandlers = [
   post('/tournament', createTournament),
   post('/tournament/:id/join', joinTournament),
-  post('/tournament/:id/start', startTournament)
+  post('/tournament/:id/start', startTournament),
+  get('/tournament', listTournaments)
 ];

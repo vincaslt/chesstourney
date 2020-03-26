@@ -1,4 +1,5 @@
 import React from 'react';
+import 'fomantic-ui-css/semantic.css';
 import { Switch, Route } from 'react-router';
 import { BrowserRouter } from 'react-router-dom';
 import Game from './pages/Game';
@@ -8,8 +9,8 @@ import { Loader } from 'semantic-ui-react';
 import Landing from './pages/Landing';
 import Register from './pages/Register';
 import Tournaments from './pages/Tournaments';
-
-import 'fomantic-ui-css/semantic.css';
+import ActiveGamesContainer from './state/ActiveGamesContainer';
+import CreateTournament from './pages/CreateTournament';
 
 const Routes = () => {
   const { loading, userInfo } = UserContainer.useContainer();
@@ -29,14 +30,19 @@ const Routes = () => {
   );
 
   const privateRoutes = (
-    <Switch>
-      <Route exact path="/">
-        <Tournaments />
-      </Route>
-      <Route exact path="/game/:id">
-        <Game />
-      </Route>
-    </Switch>
+    <ActiveGamesContainer.Provider>
+      <Switch>
+        <Route exact path="/">
+          <Tournaments />
+        </Route>
+        <Route exact path="/tournament/create">
+          <CreateTournament />
+        </Route>
+        <Route exact path="/game/:id">
+          <Game />
+        </Route>
+      </Switch>
+    </ActiveGamesContainer.Provider>
   );
 
   return loading ? (
