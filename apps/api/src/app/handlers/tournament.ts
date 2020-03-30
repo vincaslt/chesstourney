@@ -7,8 +7,7 @@ import { getParams } from '../lib/utils/getParams';
 import { createError } from 'micro';
 import { STATUS_ERROR } from '../lib/constants';
 import { Types } from 'mongoose';
-import { GameModel, GameInitFields, Game } from '../models/Game';
-import { DocumentType } from '@typegoose/typegoose';
+import { GameModel, GameInitFields } from '../models/Game';
 
 const createTournament: AugmentedRequestHandler = async req => {
   const { userId } = getAuth(req);
@@ -53,6 +52,10 @@ const startTournament: AugmentedRequestHandler = async req => {
 
   if (!tournament) {
     throw createError(STATUS_ERROR.NOT_FOUND, 'Tournament not found');
+  }
+
+  if (tournament.players.length < 2) {
+    throw createError(STATUS_ERROR.BAD_REQUEST, 'Not enough players');
   }
 
   const games = [];
@@ -103,25 +106,29 @@ const listTournaments: AugmentedRequestHandler = async req => {
 
   const tournaments = await TournamentModel.find({
     players: Types.ObjectId(userId)
+  }).populate('players');
+
+  const games = await GameModel.find({
+    tournament: { $in: tournaments }
   });
 
-  const activeTournaments = (
-    await Promise.all(
-      tournaments.map(
-        async tournament =>
-          await GameModel.findOne({
-            tournament: tournament.id,
-            outcome: { $exists: false },
-            $where:
-              'this.lastMoveDate.getTime() > (Date.now() - this.millisPerMove)'
-          })
-      )
-    )
-  )
-    .filter((t): t is DocumentType<Game> => !!t)
-    .map(({ id }) => id);
+  // const activeTournaments = (
+  //   await Promise.all(
+  //     tournaments.map(
+  //       async tournament =>
+  //         await GameModel.findOne({
+  //           tournament: tournament.id,
+  //           outcome: { $exists: false },
+  //           $where:
+  //             'this.lastMoveDate.getTime() > (Date.now() - this.millisPerMove)'
+  //         })
+  //     )
+  //   )
+  // )
+  //   .filter((t): t is DocumentType<Game> => !!t)
+  //   .map(({ id }) => id);
 
-  return { activeGames, tournaments, activeTournaments };
+  return { activeGames, tournaments, games };
 };
 
 export const tournamentHandlers = [

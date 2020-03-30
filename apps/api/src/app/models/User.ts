@@ -14,7 +14,7 @@ export class User {
   @prop({ required: true, unique: true, index: true })
   username: string;
 
-  @prop({ required: true, default: false })
+  @prop({ required: true, default: false, select: false })
   verified: boolean;
 
   @prop({ required: true, select: false })

@@ -7,8 +7,8 @@ import { Tournament } from '../interfaces/tournament';
 
 function useTournaments() {
   const [activeGames, setActiveGames] = useState<GameInfo[]>([]);
+  const [tournamentGames, setTournamentGames] = useState<GameInfo[]>([]);
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
-  const [activeTournaments, setActiveTournaments] = useState<string[]>([]);
   const [loading, withLoading] = useLoading(true);
 
   useEffect(() => {
@@ -16,18 +16,16 @@ function useTournaments() {
 
     if (accessToken) {
       withLoading(
-        getUserTournaments().then(
-          ({ activeGames, tournaments, activeTournaments }) => {
-            setActiveGames(activeGames);
-            setTournaments(tournaments);
-            setActiveTournaments(activeTournaments);
-          }
-        )
+        getUserTournaments().then(({ activeGames, tournaments, games }) => {
+          setActiveGames(activeGames);
+          setTournaments(tournaments);
+          setTournamentGames(games);
+        })
       );
     }
   }, [withLoading]);
 
-  return { activeGames, tournaments, activeTournaments, loading };
+  return { activeGames, tournaments, tournamentGames, loading };
 }
 
 const TournamentsContainer = createContainer(useTournaments);

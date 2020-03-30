@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { Button, Input, Grid } from 'semantic-ui-react';
 import TournamentsContainer from '../state/ActiveGamesContainer';
 import { startTournament, joinTournament } from '../api';
+import TournamentTable from '../components/TournamentTable';
 
 function Tournaments() {
   const { userInfo } = UserContainer.useContainer();
@@ -17,6 +18,11 @@ function Tournaments() {
 
   const onClickJoin = () => {
     joinTournament(tournamentId);
+  };
+
+  const onClickRefresh = (id: string) => () => {
+    console.log('REFRESH', id);
+    // TODO: implement
   };
 
   return (
@@ -41,23 +47,14 @@ function Tournaments() {
             </Link>
           </Grid.Column>
         </Grid.Row>
-        <Grid.Row columns={6}>
-          {tournaments
-            .filter(
-              ({ isStarted, createdBy }) =>
-                !isStarted && createdBy === userInfo?._id
-            )
-            .map(({ _id, name }) => (
-              <Grid.Column key={_id}>
-                <Button onClick={onClickStart(_id)}>Start "{name}"</Button>
-              </Grid.Column>
-            ))}
-        </Grid.Row>
-        {tournaments.map(({ _id, name, isStarted }) => (
-          <Grid.Row key={_id} columns={6}>
-            <Grid.Column>{_id}:</Grid.Column>
+        {tournaments.map(tournament => (
+          <Grid.Row>
             <Grid.Column>
-              "{name}" {!isStarted && '(pending)'}
+              <TournamentTable
+                tournament={tournament}
+                onRefresh={onClickRefresh(tournament._id)}
+                onStart={onClickStart(tournament._id)}
+              />
             </Grid.Column>
           </Grid.Row>
         ))}

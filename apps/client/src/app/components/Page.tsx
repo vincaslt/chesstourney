@@ -6,7 +6,7 @@ interface Props {
 }
 
 function Page({ children }: Props) {
-  return <Container>{children}</Container>;
+  return <Container text>{children}</Container>;
 }
 
 export default Page;

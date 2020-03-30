@@ -68,7 +68,9 @@ const verifyEmail: AugmentedRequestHandler = async req => {
   const { userId } = getAuth(req);
   const { code } = getQuery(req, ['code']);
 
-  const user = await UserModel.findById(userId).select('+verificationCode');
+  const user = await UserModel.findById(userId).select(
+    '+verificationCode +verified'
+  );
 
   if (!user) {
     throw createError(STATUS_ERROR.NOT_FOUND, 'User not found');

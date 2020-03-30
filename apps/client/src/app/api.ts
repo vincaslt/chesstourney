@@ -1,7 +1,11 @@
 import { api, withAuth } from './utils/apiHelpers';
 import { SignInDTO, AuthTokensDTO } from './interfaces/auth';
 import { UserInfoDTO, fromUserInfoDTO, CreateUserDTO } from './interfaces/user';
-import { CreateTournamentDTO, TournamentDTO } from './interfaces/tournament';
+import {
+  CreateTournamentDTO,
+  TournamentDTO,
+  fromTournamentDTO
+} from './interfaces/tournament';
 import { Uci } from 'chessops/types';
 import {
   GameInfoDTO,
@@ -41,27 +45,39 @@ export const getUserTournaments = withAuth(headers => () =>
 
 export const createTournament = withAuth(
   headers => (dto: CreateTournamentDTO) =>
-    api.post<TournamentDTO>('/tournament', dto, {
-      headers
-    })
+    api
+      .post<TournamentDTO>('/tournament', dto, {
+        headers
+      })
+      .then(res => res.data)
+      .then(fromTournamentDTO)
 );
 
 export const startTournament = withAuth(headers => (id: string) =>
-  api.post<TournamentDTO>(`/tournament/${id}/start`, undefined, {
-    headers
-  })
+  api
+    .post<TournamentDTO>(`/tournament/${id}/start`, undefined, {
+      headers
+    })
+    .then(res => res.data)
+    .then(fromTournamentDTO)
 );
 
 export const joinTournament = withAuth(headers => (id: string) =>
-  api.post<TournamentDTO>(`/tournament/${id}/join`, undefined, {
-    headers
-  })
+  api
+    .post<TournamentDTO>(`/tournament/${id}/join`, undefined, {
+      headers
+    })
+    .then(res => res.data)
+    .then(fromTournamentDTO)
 );
 
 export const submitMove = withAuth(headers => (id: string, move: Uci) =>
-  api.post<TournamentDTO>(`/game/${id}/move`, move, {
-    headers
-  })
+  api
+    .post<TournamentDTO>(`/game/${id}/move`, move, {
+      headers
+    })
+    .then(res => res.data)
+    .then(fromTournamentDTO)
 );
 
 export const getGame = withAuth(headers => (id: string) =>

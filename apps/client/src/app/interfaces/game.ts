@@ -1,5 +1,5 @@
 import { Uci } from 'chessops/types';
-import { TournamentDTO, Tournament } from './tournament';
+import { TournamentDTO, Tournament, fromTournamentDTO } from './tournament';
 
 export interface GameInfoDTO {
   white: string;
@@ -23,15 +23,16 @@ export type GameInfo = Omit<
 
 export interface UserTournamentsDTO {
   activeGames: GameInfoDTO[];
+  games: GameInfoDTO[];
   tournaments: TournamentDTO[];
-  activeTournaments: string[];
 }
 
 export type UserTournaments = Omit<
   UserTournamentsDTO,
-  'activeGames' | 'tournaments'
+  'activeGames' | 'tournaments' | 'games'
 > & {
   activeGames: GameInfo[];
+  games: GameInfo[];
   tournaments: Tournament[];
 };
 
@@ -49,6 +50,8 @@ export function fromUserTournamentsDTO(
 ): UserTournaments {
   return {
     ...dto,
-    activeGames: dto.activeGames.map(fromGameInfoDTO)
+    games: dto.games.map(fromGameInfoDTO),
+    activeGames: dto.activeGames.map(fromGameInfoDTO),
+    tournaments: dto.tournaments.map(fromTournamentDTO)
   };
 }

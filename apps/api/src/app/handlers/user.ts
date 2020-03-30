@@ -32,7 +32,7 @@ const createUser: AugmentedRequestHandler = async req => {
 const getAuthUserInfo: AugmentedRequestHandler = async req => {
   const { userId } = getAuth(req);
 
-  const user = await UserModel.findById(userId);
+  const user = await UserModel.findById(userId).select('+verified');
 
   if (!user) {
     throw createError(STATUS_ERROR.NOT_FOUND, 'User not found');
