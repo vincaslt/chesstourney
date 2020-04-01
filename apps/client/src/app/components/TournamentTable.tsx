@@ -5,11 +5,28 @@ import {
   Message,
   Menu,
   Table,
+  Button,
   Icon,
-  Button
+  Card
 } from 'semantic-ui-react';
 import { Tournament } from '../interfaces/tournament';
-import { useHistory } from 'react-router';
+import { GameInfo } from '../interfaces/game';
+import styled from 'styled-components';
+import TournamentsContainer from '../state/ActiveGamesContainer';
+import UserContainer from '../state/UserContainer';
+import GamePreview from './GamePreview';
+
+const TournamentHeading = styled(Segment)`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const isGameActive = (game: GameInfo) => {
+  return (
+    !game.outcome &&
+    game.millisPerMove > Date.now() - game.lastMoveDate.getTime()
+  );
+};
 
 interface Props {
   tournament: Tournament;
@@ -18,14 +35,45 @@ interface Props {
 }
 
 function TournamentTable({ tournament, onStart, onRefresh }: Props) {
-  const h = useHistory();
-  console.log(h);
+  const { getTournamentGames } = TournamentsContainer.useContainer();
+  const { userInfo } = UserContainer.useContainer();
+
+  const games = getTournamentGames(tournament._id);
+  const userGames = games.filter(
+    game =>
+      isGameActive(game) &&
+      (game.black === userInfo?._id || game.white === userInfo?._id)
+  );
+  const isTournamentActive = games.some(isGameActive);
+
   return (
     <div>
-      <Segment attached="top">
-        <Header>{tournament.name}</Header>
-      </Segment>
-      {!tournament.isStarted && (
+      <TournamentHeading
+        attached="top"
+        color={
+          isTournamentActive
+            ? 'green'
+            : !tournament.isStarted
+            ? 'yellow'
+            : undefined
+        }
+      >
+        <Header style={{ marginBottom: 0 }}>{tournament.name}</Header>
+        {isTournamentActive ? (
+          <div>
+            <Icon color="green" name="attention" />
+            <span style={{ color: '#21BA45' }}>Active</span>
+          </div>
+        ) : (
+          !tournament.isStarted && (
+            <div>
+              <Icon color="yellow" name="attention" />
+              <span style={{ color: '#FBBD08' }}>Pending</span>
+            </div>
+          )
+        )}
+      </TournamentHeading>
+      {!tournament.isStarted && tournament.createdBy === userInfo?._id && (
         <>
           <Message info attached>
             Share the link below to invite players. Start the tournament when
@@ -50,6 +98,15 @@ function TournamentTable({ tournament, onStart, onRefresh }: Props) {
             </Menu.Item>
           </Menu>
         </>
+      )}
+      {!!userGames.length && (
+        <Segment attached>
+          <Card.Group>
+            {userGames.map(game => (
+              <GamePreview key={game._id} game={game} />
+            ))}
+          </Card.Group>
+        </Segment>
       )}
       <Table celled attached="bottom">
         <Table.Header>

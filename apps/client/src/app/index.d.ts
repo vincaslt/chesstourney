@@ -3,6 +3,8 @@ declare module 'react-chessground' {
   import * as cg from 'chessground/types';
 
   const val: React.SFC<Config & {
+    width?: string;
+    height?: string;
     onChange?: () => void;
     onMove?: (orig: cg.Key, dest: cg.Key, capturedPiece?: cg.Piece) => void;
     onDropNewPiece?: (piece: cg.Piece, key: cg.Key) => void;

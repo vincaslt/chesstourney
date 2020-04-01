@@ -1,10 +1,13 @@
-import { Uci } from 'chessops/types';
+import { Uci, Outcome } from 'chessops/types';
 import { TournamentDTO, Tournament, fromTournamentDTO } from './tournament';
 
 export interface GameInfoDTO {
+  _id: string;
   white: string;
   black: string;
+  tournament: string;
   lastPosition: string;
+  outcome: Outcome;
   history: Uci[];
   millisPerMove: number;
   lastMoveDate: string;

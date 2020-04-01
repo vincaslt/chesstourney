@@ -1,6 +1,6 @@
 import React from 'react';
 import 'fomantic-ui-css/semantic.css';
-import { Switch, Route } from 'react-router';
+import { Switch, Route, Redirect } from 'react-router';
 import { BrowserRouter } from 'react-router-dom';
 import Game from './pages/Game';
 import Login from './pages/Login';
@@ -26,6 +26,7 @@ const Routes = () => {
       <Route exact path="/register">
         <Register />
       </Route>
+      <Redirect to="/login" />
     </Switch>
   );
 
@@ -41,6 +42,7 @@ const Routes = () => {
         <Route exact path="/game/:id">
           <Game />
         </Route>
+        <Redirect to="/" />
       </Switch>
     </ActiveGamesContainer.Provider>
   );

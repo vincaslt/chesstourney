@@ -4,15 +4,6 @@ import { User } from './User';
 import { Uci, Outcome } from 'chessops/types';
 import { Tournament } from './Tournament';
 
-// TODO: Calculate result from lastMoveDate+millisPerMove and png
-/*
-export enum GameResult {
-  WHITE_WIN = '1-0',
-  BLACK_WIN = '0-1',
-  DRAW = '1/2-1/2'
-}
-*/
-
 export interface GameInitFields {
   white: Ref<User>;
   black: Ref<User>;

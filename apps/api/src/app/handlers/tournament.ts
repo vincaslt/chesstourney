@@ -112,22 +112,6 @@ const listTournaments: AugmentedRequestHandler = async req => {
     tournament: { $in: tournaments }
   });
 
-  // const activeTournaments = (
-  //   await Promise.all(
-  //     tournaments.map(
-  //       async tournament =>
-  //         await GameModel.findOne({
-  //           tournament: tournament.id,
-  //           outcome: { $exists: false },
-  //           $where:
-  //             'this.lastMoveDate.getTime() > (Date.now() - this.millisPerMove)'
-  //         })
-  //     )
-  //   )
-  // )
-  //   .filter((t): t is DocumentType<Game> => !!t)
-  //   .map(({ id }) => id);
-
   return { activeGames, tournaments, games };
 };
 

@@ -25,7 +25,17 @@ function useTournaments() {
     }
   }, [withLoading]);
 
-  return { activeGames, tournaments, tournamentGames, loading };
+  const getTournamentGames = (tournamentId: string) => {
+    return tournamentGames.filter(game => game.tournament === tournamentId);
+  };
+
+  return {
+    activeGames,
+    tournaments,
+    tournamentGames,
+    loading,
+    getTournamentGames
+  };
 }
 
 const TournamentsContainer = createContainer(useTournaments);
